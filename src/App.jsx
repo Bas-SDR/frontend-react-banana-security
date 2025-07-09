@@ -19,7 +19,7 @@ function App() {
             <div className="content">
                 <Routes>
                         <Route path="/" element={<Home/>}/>
-                        <Route path="/profile" element={isAuth === true ? <Profile/> : <Navigate to="/signin"/>}/>
+                        <Route path="/profile" element={isAuth ? <Profile/> : <Navigate to="/signin"/>}/>
                         <Route path="/signin" element={<SignIn/>}/>
                         <Route path="/signup" element={<SignUp/>}/>
                 </Routes>
