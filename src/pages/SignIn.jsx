@@ -3,6 +3,7 @@ import {Link} from 'react-router-dom';
 import {AuthContext} from "../context/AuthContext";
 import axios from "axios";
 import { useNavigate } from 'react-router-dom';
+import isTokenValid from "../helpers/isTokenValid";
 
 
 function SignIn() {
@@ -10,23 +11,25 @@ function SignIn() {
     const [emailValue, setEmailValue] = useState("");
     const [passwordValue, setPasswordValue] = useState("");
     const [error, setError] = useState(false)
-    const controller = new AbortController();
     const navigate = useNavigate();
 
     useEffect(() => {
         const token = localStorage.getItem("token")
-        if(token) {
+        if(token && isTokenValid(token)) {
             navigate("/profile");
         }
     },[])
 
+
     async function handleSubmit(e) {
         e.preventDefault();
+        const controller = new AbortController();
         setError(false);
         try {
             const result = await axios.post("https://novi-backend-api-wgsgz.ondigitalocean.app/api/login", {
                 email: emailValue,
                 password: passwordValue,
+                signal: controller.signal,
             }, {
                 headers: {
                     "novi-education-project-id": "63fbd185-da3e-4faa-8b0f-1e1ba8957989",
@@ -34,6 +37,10 @@ function SignIn() {
             });
             login(result.data);
             // console.log(result.data);
+
+            return function cleanup() {
+                controller.abort();
+            }
         } catch (e) {
             console.error(e);
             setError(true)

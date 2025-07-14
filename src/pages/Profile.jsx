@@ -8,6 +8,7 @@ function Profile() {
     const [secrets, setSecrets] = useState({});
 
     useEffect(() => {
+        const controller = new AbortController;
             async function secretMessage() {
                 const token = localStorage.getItem("token");
                 try {
@@ -16,10 +17,15 @@ function Profile() {
                             headers: {
                                 "Content-Type": "application/json",
                                 Authorization: `Bearer ${token}`,
+                                signal: controller.signal,
                             },
                         });
                     // console.log(result.data);
                     setSecrets(result.data);
+
+                    return function cleanup() {
+                        controller.abort();
+                    }
                 } catch (e) {
                     console.error(e);
                 }
@@ -40,7 +46,7 @@ function Profile() {
             </section>
             <section>
                 <h2>Strikt geheime profiel-content</h2>
-                {Object.keys(secrets).length > 0 &&
+                {Object.keys(secrets).length > 0 ?
                     secrets.map((secret) => {
                         return (
                             <article key={secret.id}>
@@ -48,7 +54,7 @@ function Profile() {
                                 <p>{secret.content}</p>
                             </article>
                         )
-                    })
+                    }) : <p>Er zijn geen geheimen beschikbaar</p>
                 }
             </section>
             <p>Terug naar de <Link to="/">Homepagina</Link></p>
