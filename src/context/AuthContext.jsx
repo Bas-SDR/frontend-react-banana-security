@@ -25,6 +25,7 @@ function AuthContextProvider({children}) {
                         user: {
                             email: decodedToken.email,
                             roles: decodedToken.role,
+                            username: decodedToken.username,
                         },
                         status: "done",
                     });
@@ -67,8 +68,9 @@ function AuthContextProvider({children}) {
 
     const data = {
         isAuth: auth.isAuth,
-        login: login,
-        logout: logout,
+        user: auth.user,
+        login,
+        logout,
     }
 
     return (

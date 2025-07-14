@@ -6,6 +6,8 @@ import {AuthContext} from "../context/AuthContext";
 function NavBar() {
     const navigate = useNavigate();
     const {isAuth, login, logout} = useContext(AuthContext);
+
+    
     return (
         <nav>
             <Link to="/">
